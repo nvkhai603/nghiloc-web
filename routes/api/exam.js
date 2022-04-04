@@ -6,6 +6,9 @@ const multer = require("multer");
 const readXlsxFile = require("read-excel-file/node");
 const path = require("path");
 var Directory = mongoose.model("Directory");
+var Tenant = mongoose.model("Tenant");
+const fs = require('fs')
+
 // Lấy question từ sheet
 const getQuestionsFromSheet = (rows) => {
   let questions = [];
@@ -187,6 +190,7 @@ router.post(
           await element.save();
         });
       }
+      await fs.unlinkSync(req.file.path);
       await exam.save();
     } catch (error) {
       await session.abortTransaction();
@@ -206,10 +210,11 @@ router.get("/download/template", async (req, res, next) => {
 });
 
 router.post(
-  "upload/banner",
+  "/upload/banner",
   auth.require,
   upload.single("banner"),
   async function (req, res, next) {
+    console.log(req.file.filename);
     if (!req.file.path) {
       return res.status(400).send("File is not valid");
     }
@@ -224,7 +229,7 @@ router.post(
       return res.status(400).send("Directory is not valid");
     }
 
-    directory.bannerUrl = req.file.path;
+    directory.bannerUrl = "../../uploads/" + req.file.filename;
     await directory.save();
     return res.status(200).json(directory.bannerUrl);
   } 

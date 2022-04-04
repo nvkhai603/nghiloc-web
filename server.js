@@ -26,5 +26,6 @@ function init() {
 	});
 }
 
+
 // Bắt đầu chạy
 init();
