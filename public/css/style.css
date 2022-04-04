@@ -1,0 +1,44 @@
+@font-face {
+  font-family: 'googleSan';
+  src: url('../fonts/ProductSansRegular.ttf') format("truetype");
+}
+
+body{
+    font-family: 'googleSan';
+}
+
+/*Banner*/
+.banner {
+  height: 360px;
+  background-color: #5893d4;
+}
+.banner-content {
+  height: 360px;
+  background: url('../../uploads/banner.png');
+  z-index: 100;
+}
+
+.footer{
+  background-color: #1F2535;
+  min-height: 130px;
+}
+
+.home-content{
+  background-image: url("../images/trong_dong.svg");
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.get-now-btn{
+  width: 150px;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 30px;
+}
+
+@media only screen and (max-width: 1024px) {
+  .banner-img{
+    display: none;
+  }
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/meta %>
+        <title>Trang chủ | <%- directories.webName %>, Chuyên trang tổ chức thi, phổ biến về pháp luật trực tuyến.
+        </title>
+        <meta name="description"
+            content="Chuyên trang tổ chức thi, phổ biến về pháp luật trực tuyến dành cho công dân huyện Nghi Lộc, tỉnh Nghệ An.">
+</head>
+
+<body>
+    <% include ../partials/navbar %>
+        <% include ../partials/banner %>
+            <div class="bg-light home-content border-top border-2">
+                <div class="container">
+                    <div class="row p-3 pb-4">
+                        <div class="col-lg-6">
+                            <div class="bg-white rounded-3 shadow" style="height: 450px;">
+                                <div style="background-color: #CEDDEF; "
+                                    class="border-bottom border-primary border-2 px-2 py-1 text-gray">
+                                    THỂ LỆ CUỘC THI
+                                </div>
+                                <div id="rule" class="p-3" style="max-height: 390px; overflow-y: auto;">
+                                    <%- directories.rule %>
+                                </div>
+                                <div class="border-top">
+                                    <a style="cursor: pointer;" id="expand-rule" class="mx-1">Mở rộng</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-sm-3 mt-md-3 mt-lg-0 mt-xs-3 mt-3">
+                            <div class="bg-white rounded-3 shadow" style="height: 450px;">
+                                <div style="background-color: #CEDDEF;"
+                                    class="border-bottom border-primary border-2 px-2 py-1 text-gray">
+                                    KẾT QUẢ
+                                </div>
+                                <div id="result" class="p-3" style="max-height: 390px; overflow-y: auto;">
+                                    <%- directories.result %>
+                                </div>
+                                <div class="border-top">
+                                    <a style="cursor: pointer;" id="expand-result" class="mx-1">Mở rộng</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- MODAL-EXPAND -->
+                <div class="modal fade" id="modal-expand" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-xl modal-fullscreen-md-down">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modal-expand-title"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div id="modal-expand-body" class="modal-body">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END MODAL -->
+            </div>
+            <% include ../partials/link %>
+                <% include ../partials/footer %>
+</body>
+<script>
+    $(document).ready(function () {
+        var expandModal = new bootstrap.Modal($('#modal-expand'))
+        console.log(expandModal);
+        var rule = $('#rule');
+        var result = $('#result');
+        $("#expand-rule").click(function () {
+            console.log(1234);
+            $("#modal-expand-title").text("THỂ LỆ CUỘC THI");
+            $("#modal-expand-body").html(rule.html());
+            expandModal.show();
+        });
+        $("#expand-result").click(function () {
+            $("#modal-expand-title").text("KẾT QUẢ");
+            $("#modal-expand-body").html(result.html());
+            expandModal.show();
+        });
+    });
+</script>
+<% include ../partials/script %>
+
+</html>

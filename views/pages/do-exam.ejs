@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/meta %>
+        <title>Trang chủ | <%- directories.webName %>, Chuyên trang tổ chức thi, phổ biến về pháp luật trực tuyến.
+        </title>
+        <meta name="description"
+            content="Chuyên trang tổ chức thi, phổ biến về pháp luật trực tuyến dành cho công dân huyện Nghi Lộc, tỉnh Nghệ An.">
+</head>
+
+<body>
+    <% include ../partials/navbar %>
+        <% include ../partials/banner %>
+            <div class="bg-light home-content border-top border-2">
+                <div class="container">
+                    <div class="bg-white border-start border-end p-3">
+                        <h2 class="text-primary">
+                            <%- exam.name %>
+                        </h2>
+                        <% for(var i=0; i<exam.questions.length; i++) { %>
+                            <b>
+                                <%- i+1 %>
+                            </b>. <%- exam.questions[i].content %>
+                                <div class="mb-3 mt-1">
+                                    <% exam.questions[i].answers.forEach(function(answer){ %>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" value="<%- answer.key %>"
+                                                name="answer-<%- exam.questions[i]._id %>" id="<%- answer._id %>">
+                                            <label class="form-check-label" for="<%- answer._id %>">
+                                                <%- answer.key %>. <%- answer.name %>
+                                            </label>
+                                        </div>
+                                        <% }); %>
+                                </div>
+                                <% }; %>
+                                    <div style="width: 300px;" class="m-auto">
+                                        <label class="text-primary" for="">Dự đoán số người trả lời đúng</label>
+                                        <input type="number" id="guess-true-person" type="text" class="form-control">
+                                        <button id="btn-submit-exam" class="btn btn-primary mt-3 w-100">Gửi bài
+                                            thi</button>
+                                    </div>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="modal-success" tabindex="-1"
+                                        aria-labelledby="modal-success-exam" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="modal-success-exam">Thông báo</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body" id="modal-success-body">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                    </div>
+                </div>
+            </div>
+            <% include ../partials/link %>
+                <% include ../partials/footer %>
+</body>
+<% include ../partials/do-exam-script %>
+
+</html>

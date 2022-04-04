@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/meta %>
+        <title>Trang chủ | <%- directories.webName %>, Chuyên trang tổ chức thi, phổ biến về pháp luật trực tuyến.
+        </title>
+        <meta name="description"
+            content="Chuyên trang tổ chức thi, phổ biến về pháp luật trực tuyến dành cho công dân huyện Nghi Lộc, tỉnh Nghệ An.">
+</head>
+
+<body>
+    <% include ../partials/navbar %>
+        <% include ../partials/banner %>
+            <div class="bg-light home-content border-top border-2">
+                <div class="container">
+                    <div style="min-height: 300px;" class="bg-white border-start border-end p-3">
+                        <% if (!isExamStarted) { %>
+                            <h5 class="text-primary">Thông báo: Cuộc thi chưa bắt đầu, mời bạn trở lại sau!</h5>
+                            <% } %>
+                                <% if (isExamStarted) { %>
+                                    <% include ../partials/userInformation %>
+                                    <% } %>
+                    </div>
+                </div>
+            </div>
+            <% include ../partials/link %>
+            <% include ../partials/footer %>
+</body>
+<% include ../partials/script %>
+
+</html>

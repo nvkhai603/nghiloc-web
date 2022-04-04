@@ -1,0 +1,33 @@
+{
+  "name": "onlineTest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "ejs": "^2.6.2",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongo-xlsx": "^1.0.12",
+    "mongoose": "^5.6.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.1",
+    "nodemon": "^1.19.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "read-excel-file": "^5.2.28",
+    "shuffle-array": "^1.0.1"
+  }
+}

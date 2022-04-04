@@ -1,0 +1,119 @@
+<div class="user-infomation-form">
+    <h3 class="text-uppercase text-primary">Thông tin cá nhân</h3>
+    <form id="form-info row">
+        <label>Thuộc đối tượng</label>
+        <div class="form-check">
+            <input class="form-check-input" value="TEACHER" type="radio" name="forObject" id="canBo" checked>
+            <label class="form-check-label" for="canBo">
+                Cán bộ và Nhân dân
+            </label>
+        </div>
+        <div class="form-check mb-2">
+            <input class="form-check-input" value="STUDENT" type="radio" name="forObject" id="hocSinh">
+            <label class="form-check-label" for="hocSinh">
+                Học sinh
+            </label>
+        </div>
+        <input id="name" class="form-control mb-2" type="text" name="name" placeholder="Họ và tên thí sinh">
+        <input id="identityNumber" class="form-control mb-2" type="text" name="identityNumber"
+            placeholder="Số CMND, CCCD hoặc hộ chiếu">
+        <input id="phone" class="form-control mb-2" type="text" name="phone" placeholder="Số điện thoại">
+        <label>Đơn vị</label>
+        <select id="organization" class="form-control mb-2">
+            <!-- <option>Nghi Thạch</option>
+            <option>Nghi Trường</option> -->
+        </select>
+        <label>Thông tin bổ sung</label>
+        <input id="option-infor" class="form-control mb-2" type="text" name="dienthoai"
+            placeholder="Phòng, ban, khối, xóm">
+    </form>
+    <button id="create-transaction" class="btn btn-primary">Tiếp tục</button>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var optionInfor = $('#option-infor');
+        var forObject = $('input[type=radio][name=forObject]');
+        var name = $('#name');
+        var identityNumber = $('#identityNumber');
+        var phone = $('#phone');
+        var organization = $('#organization');
+        var createTransaction = $('#create-transaction');
+        var organizationDataFromServer = {};
+
+        function init() {
+            $.ajax({
+                url: '/api/organizations',
+                type: 'GET',
+                headers: { 'x-tenant-code': 'NL' },
+                success: function (data) {
+                    organizationDataFromServer = data;
+                    bindDataForTeacher();
+                }
+            });
+        }
+
+        function bindDataForTeacher() {
+            var html = '';
+            organizationDataFromServer.teachers.forEach(function (item) {
+                html += '<option value="' + item.value + '">' + item.value + '</option>';
+            });
+            organization.html(html);
+            optionInfor.attr('placeholder', 'Phòng, ban, khối, xóm').attr('name', 'department');
+        }
+
+        function bindDataForStudent() {
+            var html = '';
+            organizationDataFromServer.students.forEach(function (item) {
+                html += '<option value="' + item.value + '">' + item.value + '</option>';
+            });
+            organization.html(html);
+            optionInfor.attr('placeholder', 'Lớp').attr('name', 'class');
+        }
+
+        $('input[type=radio][name=forObject]').change(function () {
+            // Đổi đơn vị
+            if (this.value == "STUDENT") {
+                bindDataForStudent();
+            } else {
+                bindDataForTeacher();
+            }
+        });
+
+        $('#create-transaction').click($.debounce(400, function (e) {
+            var requestData = {
+                name: name[0].value,
+                identityNumber: identityNumber[0].value,
+                phone: phone[0].value,
+                organization: organization[0].value,
+                optionInfor: optionInfor[0].value,
+                forObject: forObject.filter(':checked').val(),
+                examId: "<%- examId %>",
+                extraInfor: optionInfor.val()
+            }
+
+            // Validate
+            for (let index = 0; index < Object.keys(requestData).length; index++) {
+                const key = Object.keys(requestData)[index];
+                const val = requestData[key];
+                if (requestData[key] == '') {
+                    alert('Vui lòng nhập đầy đủ thông tin');
+                    return;
+                }
+            }
+            
+            // Call service
+            $.ajax({
+                contentType: 'application/json',
+                url: '/api/user-exams/transaction',
+                type: 'POST',
+                headers: { 'x-tenant-code': 'NL' },
+                data: JSON.stringify(requestData),
+                success: function (data) {
+                    window.location.href = `/lam-bai-thi?id=<%- examId %>&transaction=${data._id}&type=${data.forObject}`;
+                }
+            });
+        }));
+        init();
+    })
+</script>

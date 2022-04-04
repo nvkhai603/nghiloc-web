@@ -1,0 +1,41 @@
+<script>
+    $(document).ready(function () {
+        $('#btn-submit-exam').click($.debounce(500, function (e) {
+            var guessTruePerson = $('#guess-true-person').val();
+            if (!guessTruePerson) {
+                alert("Vui lòng nhập dự đoán số người trả lời đúng!");
+            }
+            var answers = [];
+            <% for (var i = 0; i < exam.questions.length; i++) { %>
+                answers.push({
+                    questionId: "<%- exam.questions[i]._id %>",
+                    key: $('input[name="answer-<%- exam.questions[i]._id %>"]:checked').val()
+                });
+            <% } %>
+
+                // Call service
+                $.ajax({
+                    contentType: 'application/json',
+                    url: '/api/user-exams/submit',
+                    type: 'POST',
+                    headers: { 'x-tenant-code': 'NL' },
+                    data: JSON.stringify({
+                        transactionKey: "<%- transactionKey %>",
+                        answers,
+                        guessTruePerson: parseInt(guessTruePerson)
+                    }),
+                    success: function (data) {
+                        $('#modal-success-body').html(`
+                                    <p>Chúc mừng bạn: <b>${data.userExam.name}</b> đã hoàn thành phần thi với <b>${data.userExam.totalPoint}</b> điểm,
+                                    trong thời gian <b>${parseInt(data.userExam.totalTime)}</b> giây.</p>
+                                    Cảm ơn bạn đã tham gia bài thi, hệ thống sẽ tự động quay lại trang chủ sau 3s`)
+                        var myModal = new bootstrap.Modal(document.getElementById('modal-success'));
+                        myModal.show();
+                        setTimeout(function () {
+                            window.location.href = '/';
+                        }, 3000);
+                    }
+                });
+        }));
+    })
+</script>

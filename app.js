@@ -1,0 +1,22 @@
+const express = require("express");
+const morgan = require("morgan");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.use(morgan("combined"));
+app.use(express.static(__dirname));
+app.set('view engine', 'ejs');
+app.set('views', './views/pages');
+
+require('./models/tenant');
+require('./models/admin');
+require('./models/exam');
+require('./models/user-exam');
+require('./models/exam-transaction');
+require('./models/directory');
+require('./models/organization');
+app.use(require('./routes'));
+module.exports = app;
