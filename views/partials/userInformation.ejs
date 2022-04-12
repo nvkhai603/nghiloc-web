@@ -24,8 +24,10 @@
             <option>Nghi Trường</option> -->
         </select>
         <label>Thông tin bổ sung</label>
-        <input id="option-infor" class="form-control mb-2" type="text" name="dienthoai"
+        <input id="option-infor" class="form-control mb-2" type="text" name="thongTinThem"
             placeholder="Phòng, ban, khối, xóm">
+        <input id="date-of-birth" class="form-control mb-2" type="text" name="ngaySinh"
+            placeholder="Ngày, tháng, năm sinh">
     </form>
     <button id="create-transaction" class="btn btn-primary">Tiếp tục</button>
 </div>
@@ -37,10 +39,12 @@
         var name = $('#name');
         var identityNumber = $('#identityNumber');
         var phone = $('#phone');
+        var dateOfBirth = $('#date-of-birth');
         var organization = $('#organization');
         var createTransaction = $('#create-transaction');
         var organizationDataFromServer = {};
 
+        // Khởi tạo dữ liệu
         function init() {
             $.ajax({
                 url: '/api/organizations',
@@ -87,6 +91,7 @@
                 phone: phone[0].value,
                 organization: organization[0].value,
                 optionInfor: optionInfor[0].value,
+                dateOfBirth: dateOfBirth[0].value,
                 forObject: forObject.filter(':checked').val(),
                 examId: "<%- examId %>",
                 extraInfor: optionInfor.val()
@@ -101,19 +106,19 @@
                     return;
                 }
             }
-            
+
             // Call service
             $.ajax({
                 contentType: 'application/json',
                 url: '/api/user-exams/transaction',
                 type: 'POST',
-                headers: { 'x-tenant-code': 'NL' },
                 data: JSON.stringify(requestData),
                 success: function (data) {
                     window.location.href = `/lam-bai-thi?id=<%- examId %>&transaction=${data._id}&type=${data.forObject}`;
                 }
             });
         }));
+
         init();
     })
 </script>

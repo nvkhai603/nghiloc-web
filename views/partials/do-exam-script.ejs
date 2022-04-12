@@ -28,12 +28,12 @@
                         $('#modal-success-body').html(`
                                     <p>Chúc mừng bạn: <b>${data.userExam.name}</b> đã hoàn thành phần thi với <b>${data.userExam.totalPoint}</b> điểm,
                                     trong thời gian <b>${parseInt(data.userExam.totalTime)}</b> giây.</p>
-                                    Cảm ơn bạn đã tham gia bài thi, hệ thống sẽ tự động quay lại trang chủ sau 3s`)
+                                    Cảm ơn bạn đã tham gia bài thi, hệ thống sẽ tự động quay lại trang chủ sau 5s`)
                         var myModal = new bootstrap.Modal(document.getElementById('modal-success'));
                         myModal.show();
                         setTimeout(function () {
                             window.location.href = '/';
-                        }, 3000);
+                        }, 5000);
                     }
                 });
         }));

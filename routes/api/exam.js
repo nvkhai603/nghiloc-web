@@ -1,13 +1,16 @@
 var router = require("express").Router();
 var mongoose = require("mongoose");
 var Exam = mongoose.model("Exam");
+var UserExam = mongoose.model("UserExam");
 var auth = require("../auth");
 const multer = require("multer");
 const readXlsxFile = require("read-excel-file/node");
 const path = require("path");
 var Directory = mongoose.model("Directory");
 var Tenant = mongoose.model("Tenant");
-const fs = require('fs')
+const fs = require("fs");
+var mongoXlsx = require("mongo-xlsx");
+const JSZip = require("jszip");
 
 // Lấy question từ sheet
 const getQuestionsFromSheet = (rows) => {
@@ -209,6 +212,87 @@ router.get("/download/template", async (req, res, next) => {
   res.download(file);
 });
 
+// 1: Can bo nhan vien, khac
+// 2: Hoc sinh
+router.get("/export/:examId/:type", auth.require, async (req, res, next) => {
+  const type = req.params.type;
+  console.log(type);
+  if (type != 1 && type != 2) {
+    return res.status(400).send("Type is not valid");
+  }
+
+  var data;
+  if (type == 1) {
+    data = await UserExam.find({ examId: req.params.examId, objectType: "TEACHER"});
+  }else{{
+    data = await UserExam.find({ examId: req.params.examId, objectType: "STUDENT"});
+  }}
+  /* Generate automatic model for processing (A static model should be used) */
+  var model = [
+    {
+      displayName: "Họ và tên",
+      access: "name",
+      type: "string",
+    },
+    {
+      displayName: "Số CMND/CCCD",
+      access: "identityNumber",
+      type: "string",
+    },
+    {
+      displayName: "Số điện thoại",
+      access: "phone",
+      type: "string",
+    },
+    {
+      displayName: "Đối tượng",
+      access: "objectType",
+      type: "string",
+    },
+    {
+      displayName: "Đơn vị",
+      access: "organization",
+      type: "string",
+    },
+    {
+      displayName: "TT bổ sung",
+      access: "extraInfor",
+      type: "string",
+    },
+    {
+      displayName: "Ngày, tháng, năm sinh",
+      access: "dateOfBirth",
+      type: "string",
+    },
+    {
+      displayName: "Số câu đúng",
+      access: "totalPoint",
+      type: "number",
+    },
+    {
+      displayName: "Số dự đoán",
+      access: "guessTruePerson",
+      type: "number",
+    },
+    {
+      displayName: "Tổng thời gian(s)",
+      access: "totalTime",
+      type: "number",
+    },
+  ];
+
+  /* Generate Excel */
+  mongoXlsx.mongoData2Xlsx(
+    data,
+    model,
+    { fileName: "Ket_qua_bai_thi.xlsx" },
+    function (err, data) {
+      console.log("File saved at:", data.fullPath);
+      res.download(data.fullPath);
+    }
+  );
+});
+
 router.post(
   "/upload/banner",
   auth.require,
@@ -232,6 +316,6 @@ router.post(
     directory.bannerUrl = "../../uploads/" + req.file.filename;
     await directory.save();
     return res.status(200).json(directory.bannerUrl);
-  } 
+  }
 );
 module.exports = router;

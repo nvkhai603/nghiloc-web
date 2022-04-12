@@ -6,45 +6,46 @@ var adminModel = mongoose.model("Admin");
 var auth = require("../auth");
 
 // Register admmin
-router.post("/register", async function (req, res, next) {
-  const { account, password, tenantId } = req.body;
-  if (!(account && password && tenantId)) {
-    res.status(400).send("All input is required");
-  }
-  const oldUser = await adminModel.findOne({ account });
-  if (oldUser) {
-    return res.status(409).send("User Already Exist.");
-  }
+// router.post("/register", async function (req, res, next) {
+//   const { account, password, tenantId } = req.body;
+//   if (!(account && password && tenantId)) {
+//     res.status(400).send("All input is required");
+//   }
+//   const oldUser = await adminModel.findOne({ account });
+//   if (oldUser) {
+//     return res.status(409).send("User Already Exist.");
+//   }
 
-  const encryptedPassword = await bcrypt.hash(password, 10);
+//   const encryptedPassword = await bcrypt.hash(password, 10);
 
-  // Create user in our database
-  const admin = await adminModel.create({
-    account: account.toLowerCase(),
-    tenantId,
-    passwordHash: encryptedPassword,
-  });
-  res.status(201).json(admin);
-});
+//   // Create user in our database
+//   const admin = await adminModel.create({
+//     account: account.toLowerCase(),
+//     tenantId,
+//     passwordHash: encryptedPassword,
+//   });
+//   res.status(201).json(admin);
+// });
 
 // Login admin
-router.post("/login", async function (req, res, next) {
-  const { account, password, tenantId } = req.body;
-  if (!(account && password && tenantId)) {
+router.post("/login", auth.getTenantId, async function (req, res, next) {
+  const { account, password } = req.body;
+  const tenantId = req.reqTenantId;
+  if (!(account && password)) {
     return res.status(400).send("All input is required");
   }
   var admin = await adminModel.findOne({ account, tenantId });
   if (!admin) {
-    return res.status(401).send("Invalid Account");
+    return res.status(400).send("Invalid Account");
   }
   const isPasswordValid = await bcrypt.compare(password, admin.passwordHash);
   if (!isPasswordValid) {
-    return res.status(401).send("Invalid Password");
+    return res.status(400).send("Invalid Password");
   }
 
   // Create token
   const token = jwt.sign(
-    { _id: admin._id, account: admin.account, tenantId: tenantId},
+    { _id: admin._id, account: admin.account, tenantId: tenantId },
     process.env.TOKEN_KEY,
     {
       expiresIn: "12h",
@@ -68,19 +69,19 @@ router.get("/me", auth.require, async function (req, res, next) {
 });
 
 // Change password
-router.post("change-pass", async function (req, res, next) {
-  var { oldPass, newPass } = req.body;
+router.post("/change-pass", auth.require, async function (req, res, next) {
+  var { oldPassword, newPassword } = req.body;
   var admin = await adminModel.findOne({ _id: req.admin._id });
   if (!admin) {
     return res.status(400).send("Invalid Account");
   }
 
-  const isPasswordValid = await bcrypt.compare(oldPass, admin.passwordHash);
+  const isPasswordValid = await bcrypt.compare(oldPassword, admin.passwordHash);
   if (!isPasswordValid) {
     return res.status(400).send("Invalid Password");
   }
 
-  const encryptedPassword = await bcrypt.hash(newPass, 10);
+  const encryptedPassword = await bcrypt.hash(newPassword, 10);
   admin.passwordHash = encryptedPassword;
   await admin.save();
   return res.status(200).send("Password Changed");

@@ -14,6 +14,11 @@ const auth = {
       return res.status(401).send("Invalid Token");
     }
     return next();
+  },
+
+  getTenantId: function(req, res, next){
+    req.reqTenantId = req.headers["x-tenant-id"];
+    return next();
   }
 };
 

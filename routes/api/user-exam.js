@@ -68,9 +68,8 @@ router.get("/exams/active", async (req, res, next) => {
 });
 
 // Create transactionKey
-router.post("/transaction", async (req, res, next) => {
-  const tenantCode = req.headers["x-tenant-code"];
-  var tenant = await Tenant.findOne({ code: tenantCode });
+router.post("/transaction", auth.getTenantId, async (req, res, next) => {
+  var tenant = await Tenant.findOne({ _id: req.reqTenantId });
   if (!tenant) {
     return res.status(404).send("Tenant not found");
   }
@@ -91,6 +90,7 @@ router.post("/transaction", async (req, res, next) => {
     userExam.examId = input.examId;
     userExam.tenantId = input.tenantId;
     userExam.extraInfor = input.extraInfor;
+    userExam.dateOfBirth = input.dateOfBirth;
 
     var examTransaction = new ExamTransaction();
     examTransaction.examId = userExam.userTransactionId;
@@ -150,7 +150,10 @@ router.post("/submit", async (req, res, next) => {
   userExam.guessTruePerson = guessTruePerson;
   userExam.timeStart = examTransaction.timeStart;
   userExam.timeEnd = timeEnd;
-  userExam.totalTime = ((timeEnd - examTransaction.timeStart.getTime()) / 1000).toFixed(0);
+  userExam.totalTime = (
+    (timeEnd - examTransaction.timeStart.getTime()) /
+    1000
+  ).toFixed(0);
 
   await userExam.save();
   // await examTransaction.remove();
@@ -172,7 +175,10 @@ router.get("/exams/:examId/student", auth.require, async (req, res, next) => {
 router.get("/exams/:examId/teacher", auth.require, async (req, res, next) => {
   const { examId } = req.params;
   const tenantId = req.admin.tenantId;
-  var userExams = await UserExam.find({ examId: examId, objectType: "TEACHER" });
+  var userExams = await UserExam.find({
+    examId: examId,
+    objectType: "TEACHER",
+  });
   return res.status(200).json(userExams);
 });
 module.exports = router;

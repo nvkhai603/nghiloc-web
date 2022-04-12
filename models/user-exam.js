@@ -50,6 +50,9 @@ const userExamSchema = mongoose.Schema({
 
     // Id tenant
     tenantId: ObjectId,
+
+    // Ngày sinh
+    dateOfBirth: String,
     
     createdAt: {
         type: Date,

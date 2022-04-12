@@ -35,14 +35,27 @@
 
             </div>
             <div class="col-md-6 col-lg-3 mb-2 d-flex">
-                <div>
-                    <img width="64" height="64" src="../../public/images/4.png" alt="">
-                </div>
-                <div class="p-1">
-                    <a href="http://nghean.gov.vn:10040/wps/portal/huyennghiloc">
-                        <p><strong>CỔNG THÔNG TIN ĐIỆN TỬ HUYỆN NGHI LỘC</strong></p>
-                    </a>
-                </div>
+                <% if (directories.tenantId=='623f2814e2bf65460c67547b' ) { %>
+                    <div>
+                        <img width="64" height="64" src="../../public/images/4.png" alt="">
+                    </div>
+                    <div class="p-1">
+                        <a href="http://www.nghiloc.nghean.gov.vn/">
+                            <p><strong>CỔNG THÔNG TIN ĐIỆN TỬ HUYỆN NGHI LỘC</strong></p>
+                        </a>
+                    </div>
+                    <% } %>
+
+                        <% if (directories.tenantId !='623f2814e2bf65460c67547b' ) { %>
+                            <div>
+                                <img width="64" height="64" src="../../public/images/5.png" alt="">
+                            </div>
+                            <div class="p-1">
+                                <a href="http://www.quynhluu.nghean.gov.vn/">
+                                    <p><strong>CỔNG THÔNG TIN ĐIỆN TỬ HUYỆN QUỲNH LƯU</strong></p>
+                                </a>
+                            </div>
+                            <% } %>
             </div>
         </div>
     </div>
