@@ -1,7 +1,7 @@
 const app = require('./app')
 console.log(new Date());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3085;
 const mongoose = require('mongoose');
 require('dotenv').config();
 // Kiểm tra Database

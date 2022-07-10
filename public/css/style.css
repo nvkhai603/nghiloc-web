@@ -16,8 +16,19 @@ body{
 }
 
 .get-now-btn-ctn{
-  bottom: 24px;
+  bottom: 10px;
   cursor: pointer;
+}
+
+/* On screens that are 600px or less, set the background color to olive */
+@media screen and (max-width: 500px) {
+	.get-now-btn-ctn{
+	  bottom: 2px;
+	  cursor: pointer;
+	}
+	.get-now-img{
+		width: 100px;
+	}
 }
 
 .footer{

@@ -5,9 +5,8 @@ var Tenant = mongoose.model("Tenant");
 var auth = require("../auth");
 
 // Get directories
-router.get("/", async function (req, res, next) {
-  const tenantCode = req.headers["x-tenant-code"];
-  var tenant = await Tenant.findOne({ code: tenantCode });
+router.get("/", auth.getTenantId, async function (req, res, next) {
+  var tenant = await Tenant.findOne({_id: req.reqTenantId });
   if (!tenant) {
     return res.status(404).send("Tenant not found");
   }

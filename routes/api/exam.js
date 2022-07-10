@@ -280,7 +280,6 @@ router.get("/export/:examId/:type", auth.require, async (req, res, next) => {
       type: "number",
     },
   ];
-
   /* Generate Excel */
   mongoXlsx.mongoData2Xlsx(
     data,
