@@ -8,24 +8,24 @@ var auth = require("../auth");
 
 // Tính điểm
 const caclPoint = function (type, exam, answers) {
-  if (type == "STUDENT") {
-    if (exam.questionStudents.length == 0) {
-      return 0;
-    }
-    let point = 0;
-    for (let index = 0; index < exam.questionStudents.length; index++) {
-      let question = exam.questionStudents[index];
-      let answer = answers.find((x) => x.questionId == question._id);
-      if (
-        answer &&
-        answer.key &&
-        answer.key.toLowerCase() == question.trueAnswer.toLowerCase()
-      ) {
-        point += 1;
-      }
-    }
-    return point;
-  } else {
+  // if (type == "STUDENT") {
+  //   if (exam.questionStudents.length == 0) {
+  //     return 0;
+  //   }
+  //   let point = 0;
+  //   for (let index = 0; index < exam.questionStudents.length; index++) {
+  //     let question = exam.questionStudents[index];
+  //     let answer = answers.find((x) => x.questionId == question._id);
+  //     if (
+  //       answer &&
+  //       answer.key &&
+  //       answer.key.toLowerCase() == question.trueAnswer.toLowerCase()
+  //     ) {
+  //       point += 1;
+  //     }
+  //   }
+  //   return point;
+  // } else {
     if (exam.questionTeachers.length == 0) {
       return 0;
     }
@@ -42,7 +42,7 @@ const caclPoint = function (type, exam, answers) {
       }
     }
     return point;
-  }
+  // }
 };
 
 // Get exam active
@@ -86,7 +86,7 @@ router.post("/transaction", auth.getTenantId, async (req, res, next) => {
     userExam.phone = input.phone;
     userExam.organization = input.organization;
     userExam.objectType = input.forObject;
-    userExam.organizationUnit = input.organizationUnit;
+    userExam.objectives = input.objectives;
     userExam.examId = input.examId;
     userExam.tenantId = input.tenantId;
     userExam.extraInfor = input.extraInfor;
@@ -156,7 +156,7 @@ router.post("/submit", async (req, res, next) => {
   ).toFixed(0);
 
   await userExam.save();
-  // await examTransaction.remove();
+  await examTransaction.remove();
   session.commitTransaction();
 
   return res.status(200).json({ transactionKey, userExam });
@@ -166,7 +166,7 @@ router.post("/submit", async (req, res, next) => {
 // Admin
 router.get("/exams/:examId/student", auth.require, async (req, res, next) => {
   const { examId } = req.params;
-  var userExams = await UserExam.find({ examId, objectType: "STUDENT" });
+  var userExams = await UserExam.find({ examId }).sort({ createdAt: -1 }).limit(15);
   return res.status(200).json(userExams);
 });
 
@@ -174,11 +174,9 @@ router.get("/exams/:examId/student", auth.require, async (req, res, next) => {
 // Admin
 router.get("/exams/:examId/teacher", auth.require, async (req, res, next) => {
   const { examId } = req.params;
-  const tenantId = req.admin.tenantId;
   var userExams = await UserExam.find({
-    examId: examId,
-    objectType: "TEACHER",
-  });
+    examId: examId
+  }).sort({ createdAt: -1 }).limit(15);
   return res.status(200).json(userExams);
 });
 module.exports = router;

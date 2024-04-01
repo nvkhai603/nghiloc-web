@@ -162,7 +162,7 @@ router.post(
       return res.status(400).send("File is not valid");
     }
     var exam = new Exam();
-    const { name, timeOpen, timeClose, forObject } = req.body;
+    const { name, timeOpen, timeClose, forObject, totalRandomQuestion, organizations, objectives } = req.body;
     exam.questionTeachers = [];
     exam.questionStudents = [];
     exam.name = name;
@@ -171,15 +171,19 @@ router.post(
     exam.forObject = forObject;
     exam.isActive = true;
     exam.tenantId = req.admin.tenantId;
+    exam.totalRandomQuestion = totalRandomQuestion;
+    exam.organizations = organizations;
+    exam.objectives = objectives;
     const otherRows = await readXlsxFile(req.file.path, {
-      sheet: "QuestionOthers",
+      // sheet: "QuestionOthers",
+      sheet: "Questions",
     });
     exam.questionTeachers = getQuestionsFromSheet(otherRows);
 
-    const studentRows = await readXlsxFile(req.file.path, {
-      sheet: "QuestionStudents",
-    });
-    exam.questionStudents = getQuestionsFromSheet(studentRows);
+    // const studentRows = await readXlsxFile(req.file.path, {
+    //   sheet: "QuestionStudents",
+    // });
+    // exam.questionStudents = getQuestionsFromSheet(studentRows);
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
@@ -215,18 +219,18 @@ router.get("/download/template", async (req, res, next) => {
 // 1: Can bo nhan vien, khac
 // 2: Hoc sinh
 router.get("/export/:examId/:type", auth.require, async (req, res, next) => {
-  const type = req.params.type;
-  console.log(type);
-  if (type != 1 && type != 2) {
-    return res.status(400).send("Type is not valid");
-  }
+  // const type = req.params.type;
+  // console.log(type);
+  // if (type != 1 && type != 2) {
+  //   return res.status(400).send("Type is not valid");
+  // }
 
-  var data;
-  if (type == 1) {
-    data = await UserExam.find({ examId: req.params.examId, objectType: "TEACHER"});
-  }else{{
-    data = await UserExam.find({ examId: req.params.examId, objectType: "STUDENT"});
-  }}
+  var data = await UserExam.find({ examId: req.params.examId}).sort({ createdAt: -1 });
+  // if (type == 1) {
+  //   data = await UserExam.find({ examId: req.params.examId, objectType: "TEACHER"});
+  // }else{{
+  //   data = await UserExam.find({ examId: req.params.examId, objectType: "STUDENT"});
+  // }}
   /* Generate automatic model for processing (A static model should be used) */
   var model = [
     {

@@ -15,9 +15,7 @@ const userExamSchema = mongoose.Schema({
 
     // Loại đối tượng
     objectType: {
-        type: String,
-        enum: ["STUDENT", "TEACHER"],
-
+        type: String
     },
 
     // Phòng ban, khối xóm của CNVC, Nhân dân

@@ -43,6 +43,8 @@ router.get(
       res.locals.isExamStarted = true;
       res.locals.isShowExamButton = false;
       res.locals.examId = exam._id;
+      res.locals.organizations = exam.organizations;
+      res.locals.objectives = exam.objectives;
       return res.render("exam", { title: "Express" });
     }
 
@@ -70,9 +72,9 @@ router.get("/lam-bai-thi", auth.getTenantId, async function (req, res, next) {
     return res.render("do-exam");
   }
 
-  if (examTransaction.forObject.toLowerCase() != type.toLowerCase()) {
-    return res.render("do-exam");
-  }
+  // if (examTransaction.forObject.toLowerCase() != type.toLowerCase()) {
+  //   return res.render("do-exam");
+  // }
 
   var exam = await Exam.findOne({ _id: id });
   if (!exam) {
@@ -81,19 +83,20 @@ router.get("/lam-bai-thi", auth.getTenantId, async function (req, res, next) {
 
   res.locals.isValidTransaction = true;
   res.locals.transactionKey = transaction;
-  if (type.toLowerCase() == "student") {
+  // if (type.toLowerCase() == "student") {
+  //   res.locals.exam = {
+  //     name: exam.name,
+  //     tenantId: exam.tenantId,
+  //     questions: shuffle.pick(exam.questionStudents, { picks: exam.totalRandomQuestion }),
+  //   };
+  // } else {
+    console.log(exam.totalRandomQuestion);
     res.locals.exam = {
       name: exam.name,
       tenantId: exam.tenantId,
-      questions: shuffle.pick(exam.questionStudents, { picks: 14 }),
+      questions: shuffle.pick(exam.questionTeachers, { picks: exam.totalRandomQuestion }),
     };
-  } else {
-    res.locals.exam = {
-      name: exam.name,
-      tenantId: exam.tenantId,
-      questions: shuffle.pick(exam.questionTeachers, { picks: 14 }),
-    };
-  }
+  // }
   return res.render("do-exam");
 });
 

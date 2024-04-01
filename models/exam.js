@@ -1,10 +1,12 @@
-const { ObjectId } = require("mongoose");
+const { ObjectId, Number } = require("mongoose");
 const mongoose = require("mongoose");
 const examSchema = mongoose.Schema({
   name: String,
   timeOpen: Date,
   timeClose: Date,
   tenantId: ObjectId,
+  organizations: String,
+  objectives: String,
   isActive: {
     type: Boolean,
     default: false,
@@ -48,6 +50,8 @@ const examSchema = mongoose.Schema({
       ],
     },
   ],
+  // Số câu hỏi random lấy ra 
+  totalRandomQuestion: Number,
   createdAt: {
     type: Date,
     dafault: new Date(),

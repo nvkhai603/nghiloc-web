@@ -7,8 +7,7 @@ const examTransactionSchema = mongoose.Schema({
     },
 
     forObject: {
-        type: String,
-        enum: ["STUDENT", "TEACHER"]
+        type: String
     },
 
     userTransactionId: ObjectId,

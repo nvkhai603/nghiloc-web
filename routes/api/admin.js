@@ -6,26 +6,26 @@ var adminModel = mongoose.model("Admin");
 var auth = require("../auth");
 
 // Register admmin
-// router.post("/register", async function (req, res, next) {
-//   const { account, password, tenantId } = req.body;
-//   if (!(account && password && tenantId)) {
-//     res.status(400).send("All input is required");
-//   }
-//   const oldUser = await adminModel.findOne({ account });
-//   if (oldUser) {
-//     return res.status(409).send("User Already Exist.");
-//   }
+router.post("/register", async function (req, res, next) {
+  const { account, password, tenantId } = req.body;
+  if (!(account && password && tenantId)) {
+    res.status(400).send("All input is required");
+  }
+  const oldUser = await adminModel.findOne({ account });
+  if (oldUser) {
+    return res.status(409).send("User Already Exist.");
+  }
 
-//   const encryptedPassword = await bcrypt.hash(password, 10);
+  const encryptedPassword = await bcrypt.hash(password, 10);
 
-//   // Create user in our database
-//   const admin = await adminModel.create({
-//     account: account.toLowerCase(),
-//     tenantId,
-//     passwordHash: encryptedPassword,
-//   });
-//   res.status(201).json(admin);
-// });
+  // Create user in our database
+  const admin = await adminModel.create({
+    account: account.toLowerCase(),
+    tenantId,
+    passwordHash: encryptedPassword,
+  });
+  res.status(201).json(admin);
+});
 
 // Login admin
 router.post("/login", auth.getTenantId, async function (req, res, next) {

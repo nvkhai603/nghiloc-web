@@ -17,7 +17,8 @@ const auth = {
   },
 
   getTenantId: function(req, res, next){
-    req.reqTenantId = req.headers["x-tenant-id"];
+    // req.reqTenantId = req.headers["x-tenant-id"];
+    req.reqTenantId = "623f2814e2bf65460c67547b"
     return next();
   }
 };
