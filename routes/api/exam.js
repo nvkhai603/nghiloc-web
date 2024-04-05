@@ -12,6 +12,14 @@ const fs = require("fs");
 var mongoXlsx = require("mongo-xlsx");
 const JSZip = require("jszip");
 
+const getQuestionType = (type) => {
+  if (type == 1) {
+    return "FREE_TEXT";
+  } else {
+    return "ONE_CHOICE";
+  }
+};
+
 // Lấy question từ sheet
 const getQuestionsFromSheet = (rows) => {
   let questions = [];
@@ -21,26 +29,32 @@ const getQuestionsFromSheet = (rows) => {
     const rowContent = rows[index];
     let newQuestion = {
       content: rowContent[0],
-      typeQuestion: "ONE_CHOICE",
-      answers: [
-        {
-          key: "A",
-          name: rowContent[1],
-        },
-        {
-          key: "B",
-          name: rowContent[2],
-        },
-        {
-          key: "C",
-          name: rowContent[3],
-        },
-        {
-          key: "D",
-          name: rowContent[4],
-        },
-      ],
-      trueAnswer: rowContent[5],
+      typeQuestion: getQuestionType(rowContent[6]),
+      answers:
+        getQuestionType(rowContent[6]) === "FREE_TEXT"
+          ? null
+          : [
+              {
+                key: "A",
+                name: rowContent[1],
+              },
+              {
+                key: "B",
+                name: rowContent[2],
+              },
+              {
+                key: "C",
+                name: rowContent[3],
+              },
+              {
+                key: "D",
+                name: rowContent[4],
+              },
+            ],
+      trueAnswer:
+        getQuestionType(rowContent[6]) === "FREE_TEXT"
+          ? rowContent[7].toLowerCase()
+          : rowContent[5],
     };
     questions.push(newQuestion);
   }
@@ -162,7 +176,15 @@ router.post(
       return res.status(400).send("File is not valid");
     }
     var exam = new Exam();
-    const { name, timeOpen, timeClose, forObject, totalRandomQuestion, organizations, objectives } = req.body;
+    const {
+      name,
+      timeOpen,
+      timeClose,
+      forObject,
+      totalRandomQuestion,
+      organizations,
+      objectives,
+    } = req.body;
     exam.questionTeachers = [];
     exam.questionStudents = [];
     exam.name = name;
@@ -225,7 +247,9 @@ router.get("/export/:examId/:type", auth.require, async (req, res, next) => {
   //   return res.status(400).send("Type is not valid");
   // }
 
-  var data = await UserExam.find({ examId: req.params.examId}).sort({ createdAt: -1 });
+  var data = await UserExam.find({ examId: req.params.examId }).sort({
+    createdAt: -1,
+  });
   // if (type == 1) {
   //   data = await UserExam.find({ examId: req.params.examId, objectType: "TEACHER"});
   // }else{{

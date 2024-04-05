@@ -19,9 +19,11 @@
                             <%- exam.name %>
                         </h2>
                         <% for(var i=0; i<exam.questions.length; i++) { %>
+                          
                             <b>
                                 <%- i+1 %>
                             </b>. <%- exam.questions[i].content %>
+                            <% if (exam.questions[i].typeQuestion==='ONE_CHOICE' ) { %>
                                 <div class="mb-3 mt-1">
                                     <% exam.questions[i].answers.forEach(function(answer){ %>
                                         <div class="form-check">
@@ -33,6 +35,9 @@
                                         </div>
                                         <% }); %>
                                 </div>
+                                <% } else { %>
+                                    <textarea class="form-control mt-2 mb-3" placeholder="Nhập câu trả lời..." id="answertextarea" name="answer-<%- exam.questions[i]._id %>" rows="2"></textarea>
+                                    <% } %>
                                 <% }; %>
                                     <div style="width: 300px;" class="m-auto">
                                         <label class="text-primary" for="">Dự đoán số người trả lời đúng</label>

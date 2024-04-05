@@ -22,8 +22,8 @@ const examSchema = mongoose.Schema({
       trueAnswer: Object,
       typeQuestion: {
         type: String,
-        enum: ["MORE_CHOICE", "ONE_CHOICE"],
-        default: "ONE_CHOICE"
+        enum: ["MORE_CHOICE", "ONE_CHOICE", "FREE_TEXT"],
+        default: "ONE_CHOICE",
       },
       answers: [
         {
@@ -39,8 +39,8 @@ const examSchema = mongoose.Schema({
       trueAnswer: Object,
       typeQuestion: {
         type: String,
-        enum: ["MORE_CHOICE", "ONE_CHOICE"],
-        default: "ONE_CHOICE"
+        enum: ["MORE_CHOICE", "ONE_CHOICE", "FREE_TEXT"],
+        default: "ONE_CHOICE",
       },
       answers: [
         {
@@ -50,7 +50,7 @@ const examSchema = mongoose.Schema({
       ],
     },
   ],
-  // Số câu hỏi random lấy ra 
+  // Số câu hỏi random lấy ra
   totalRandomQuestion: Number,
   createdAt: {
     type: Date,
